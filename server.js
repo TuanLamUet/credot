@@ -2,10 +2,10 @@
 
 require("dotenv").config();
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
 const connectDb = require("./config/connectDb");
-const authRouter = require("./routers/authRouter");
-const app = express();
+const router = require("./routers/router");
 
 const port = process.env.PORT || 3300;
 
@@ -17,6 +17,6 @@ app.get("/", (req, res) => {
   res.json({ message: "oke" });
 });
 
-app.use("/api", authRouter);
+app.use("/api", router);
 
 app.listen(port, () => console.log(`this app running on port ${port}`));

@@ -10,7 +10,7 @@ const register = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { telephoneNumber, password, rePassword } = req.body;
+  const { telephoneNumber, password, rePassword, point, role } = req.body;
 
   try {
     let user = await User.findOne({ telephoneNumber });
@@ -23,6 +23,8 @@ const register = async (req, res) => {
       telephoneNumber,
       password,
       rePassword,
+      point,
+      role,
     });
 
     const salt = await bcrypt.genSalt(8);
@@ -31,11 +33,13 @@ const register = async (req, res) => {
 
     await user.save();
 
-    const payload = {
-      user: {
-        telephoneNumber: user.telephoneNumber,
-      },
+    const userInfo = {
+      id: user._id,
+      telephoneNumber,
+      role: user.role,
+      point: user.point,
     };
+    const payload = userInfo;
 
     jwt.sign(
       payload,
@@ -43,7 +47,7 @@ const register = async (req, res) => {
       { expiresIn: "5 days" },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ user: payload, token });
       }
     );
   } catch (err) {
@@ -72,13 +76,13 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
     }
-
-    const payload = {
-      user: {
-        telephoneNumber,
-        point: user.point,
-      },
+    const userInfo = {
+      id: user._id,
+      telephoneNumber,
+      role: user.role,
+      point: user.point,
     };
+    const payload = userInfo;
 
     jwt.sign(
       payload,
@@ -86,7 +90,10 @@ const login = async (req, res) => {
       { expiresIn: "5 days" },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({
+          user: payload,
+          token,
+        });
       }
     );
   } catch (err) {
