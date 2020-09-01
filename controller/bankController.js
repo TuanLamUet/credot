@@ -1,7 +1,7 @@
 /** @format */
 
-const auth = require("../middleware/auth");
 const Bank = require("../models/bank");
+const { findOneAndUpdate } = require("../models/bank");
 
 const getAllBank = async (req, res) => {
   const listBank = await Bank.find();
@@ -13,28 +13,46 @@ const createNewBank = async (req, res) => {
   const {
     name,
     logo,
-    nameLoadPackage,
+    nameLoanPackage,
     value,
     percentRate,
     description,
   } = req.body;
-  let bank = await Bank.findOne({ name });
+  try {
+    let bank = await Bank.findOne({ name });
 
-  if (bank) {
-    return res.status(400).json({ message: "This bank is exists" });
+    if (bank) {
+      return res.status(400).json({ message: "This bank is exists" });
+    }
+
+    bank = new Bank({
+      name,
+      logo,
+      listSuggest: [{ nameLoanPackage, value, percentRate, description }],
+    });
+    await bank.save();
+    return res.status(201).json(bank);
+  } catch (err) {
+    res.json(500).json(err);
   }
-
-  bank = new Bank({
-    name,
-    logo,
-    "listSuggest.nameLoanPackage": nameLoadPackage,
-    "listSuggest.value": value,
-    "listSuggest.percentRate": percentRate,
-    "listSuggest.value": value,
-  });
 };
 
-const addNewLoanPackageToBank = async (req, res) => {};
+const addNewLoanPackageToBank = async (req, res) => {
+  const { name, nameLoanPackage, value, percentRate, description } = req.body;
+  try {
+    const bank = await Bank.findOne({ name });
+    if (!bank) {
+      return res.status(400).json({ message: "This bank do not exists" });
+    }
+    const listSuggest = { nameLoanPackage, value, percentRate, description };
+    bank.listSuggest.unshift(listSuggest)
+    console.log(bank);
+    await bank.save()
+    return res.status(200).json(bank);
+  } catch (err) {
+    return res.status(500).json({ message: "Server error"});
+  }
+};
 module.exports = {
   getAllBank,
   getBankFilterByUser,

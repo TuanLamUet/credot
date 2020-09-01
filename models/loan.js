@@ -1,29 +1,31 @@
 /** @format */
 
 const mongoose = require("mongoose");
+
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema(
+const LoanSchema = new Schema(
   {
-    telephoneNumber: {
+    userId: {
       type: String,
       required: true,
     },
-    password: {
+    bankId: {
       type: String,
+      required: true
     },
-    role: {
+    loanPackageId: {
       type: String,
-      default: "user",
+      required: true,
     },
-    point: {
-      default: 0,
+    status: {
       type: String,
-    },
+      required: true
+    }
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("loan", LoanSchema);
