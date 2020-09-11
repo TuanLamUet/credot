@@ -1,46 +1,46 @@
 /** @format */
 
 const mongoose = require("mongoose");
+const shortId = require("shortid");
 
 const Schema = mongoose.Schema;
 
-const BankSchema = new Schema(
-  {
-    name: {
+const BankSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  totalMoney: {
+    type: Number,
+    required: true
+  },
+  logo: {
+    type: String,
+    default: "https://miro.medium.com/max/6000/1*uZyt9Z189siaNsAlIDtjEg.jpeg",
+  },
+  listSuggest: [{
+    loanPackageId: {
+      type: String,
+      required: true
+    },
+    nameLoanPackage: {
       type: String,
       required: true,
     },
-    totalMoney: {
-      type: Number,
-      required: true
-    },
-    logo: {
+    value: {
       type: String,
-      default: "https://miro.medium.com/max/6000/1*uZyt9Z189siaNsAlIDtjEg.jpeg",
+      required: true,
     },
-    listSuggest: [
-      {
-        nameLoanPackage: {
-          type: String,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-        percentRate: {
-          type: String,
-          required: true,
-        },
-        description: {
-          type: String,
-        },
-      },
-    ],
-  },
-  {
-    timestamps: true,
-  }
-);
+    percentRate: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+  }, ],
+}, {
+  timestamps: true,
+});
 
 module.exports = mongoose.model("bank", BankSchema);
