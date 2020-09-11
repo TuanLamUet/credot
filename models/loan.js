@@ -17,10 +17,9 @@ const LoanSchema = new Schema({
     type: String,
     required: true,
   },
-
   status: {
     type: String,
-    required: true
+    default: 'chờ duyệt'
   }
 }, {
   timestamps: true,

@@ -1,12 +1,9 @@
 /** @format */
 
 const Bank = require("../models/bank");
-const {
-  findOneAndUpdate
-} = require("../models/bank");
 const shortId = require("shortid");
 
-const getAllBank = async (req, res) => {
+const getAllBank = async (_req, res) => {
   const listBank = await Bank.find();
   return res.status(200).json(listBank);
 };
@@ -17,9 +14,9 @@ const createNewBank = async (req, res) => {
     name,
     logo,
     nameLoanPackage,
-    value,
+    amountFrom,
+    amountTo,
     percentRate,
-    description,
   } = req.body;
   try {
     let bank = await Bank.findOne({
@@ -28,7 +25,7 @@ const createNewBank = async (req, res) => {
 
     if (bank) {
       return res.status(400).json({
-        message: "This bank is exists"
+        message: "Ngân hàng này đã tồn tại"
       });
     }
 
@@ -36,11 +33,10 @@ const createNewBank = async (req, res) => {
       name,
       logo,
       listSuggest: [{
-        loanPackageId: shortId.generate(),
         nameLoanPackage,
-        value,
+        amountFrom,
+        amountTo,
         percentRate,
-        description
       }],
     });
     await bank.save();
@@ -54,9 +50,9 @@ const addNewLoanPackageToBank = async (req, res) => {
   const {
     name,
     nameLoanPackage,
-    value,
+    amountFrom,
+    amountTo,
     percentRate,
-    description
   } = req.body;
   try {
     const bank = await Bank.findOne({
@@ -64,15 +60,14 @@ const addNewLoanPackageToBank = async (req, res) => {
     });
     if (!bank) {
       return res.status(400).json({
-        message: "This bank do not exists"
+        message: "Ngân hàng này không tồn tại"
       });
     }
     const listSuggest = {
-      loanPackageId: shortId.generate(),
       nameLoanPackage,
-      value,
+      amountFrom,
+      amountTo,
       percentRate,
-      description
     };
     bank.listSuggest.unshift(listSuggest)
     console.log(bank);

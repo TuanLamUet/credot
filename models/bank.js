@@ -1,7 +1,6 @@
 /** @format */
 
 const mongoose = require("mongoose");
-const shortId = require("shortid");
 
 const Schema = mongoose.Schema;
 
@@ -10,34 +9,29 @@ const BankSchema = new Schema({
     type: String,
     required: true,
   },
-  totalMoney: {
-    type: Number,
-    required: true
-  },
+
   logo: {
     type: String,
     default: "https://miro.medium.com/max/6000/1*uZyt9Z189siaNsAlIDtjEg.jpeg",
   },
   listSuggest: [{
-    loanPackageId: {
-      type: String,
-      required: true
-    },
     nameLoanPackage: {
       type: String,
       required: true,
     },
-    value: {
+    amountFrom: {
       type: String,
       required: true,
+    },
+    amountTo: {
+      type: String,
+      required: true
     },
     percentRate: {
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-    },
+
   }, ],
 }, {
   timestamps: true,

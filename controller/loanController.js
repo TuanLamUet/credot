@@ -1,4 +1,5 @@
 const Loan = require("../models/loan");
+const bank = require("../models/bank");
 
 const createNewRequestLoan = async (req, res) => {
   const {
@@ -6,16 +7,13 @@ const createNewRequestLoan = async (req, res) => {
     loanPackageId
   } = req.body
   try {
-    const requestLoan = Loan.findById(bankId)
-    if (requestLoan) {
-      console.log(requestLoan)
-    }
     const newRequestLoan = new Loan({
       userId: req.user.id,
       bankId,
       loanPackageId
     })
     await newRequestLoan.save()
+    return res.status(201).json(newRequestLoan)
   } catch (err) {
     return res.status(500).json({
       message: "server error"
@@ -25,27 +23,24 @@ const createNewRequestLoan = async (req, res) => {
 
 const listRequestLoan = async (req, res) => {
   try {
-    const loanPackages = await Loan.find();
-    if (loanPackages) {
-      return res.status(200).json(request);
-    }
-  } catch (err) {
-    return res.status(500).json({
-      message: "server error"
-    })
-  }
-};
-
-const listRequestLoanUser = async (req, res) => {
-  try {
-    const request = await Loan.find({
+    const loanPackages = await Loan.find({
       userId: req.user.id
     });
-    console.log(request)
-    // [{bankId, packageId}]
-    if (request) {
-      return res.status(200).json(request);
+    const loans = []
+    if (loanPackages) {
 
+      for (const loan of loanPackages) {
+        const aBank = await bank.findById(loan.bankId)
+
+        loans.push(...aBank.listSuggest.filter(item => {
+          console.log(item._id)
+          console.log(loan.loanPackageId)
+          if (item._id == loan.loanPackageId) {
+            return item
+          }
+        }))
+      }
+      return res.status(200).json(loans);
     }
   } catch (err) {
     return res.status(500).json({
@@ -53,8 +48,8 @@ const listRequestLoanUser = async (req, res) => {
     })
   }
 };
+
 module.exports = {
   listRequestLoan,
   createNewRequestLoan,
-  listRequestLoanUser
 };
