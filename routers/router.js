@@ -11,7 +11,8 @@ const {
 } = require("../controller/loanController");
 
 router.post("/login", authController.login);
-router.post("/register", authController.register);
+router.post("/user", authController.createNewUser)
+router.patch("/register", authController.register);
 
 router.post("/bank", auth, bankController.createNewBank);
 router.put("/bank", auth, bankController.addNewLoanPackageToBank);

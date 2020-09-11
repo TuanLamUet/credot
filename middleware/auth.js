@@ -9,13 +9,17 @@ module.exports = function (req, res, next) {
 
   // Check if not token
   if (!token) {
-    return res.status(401).json({ msg: "No token, authorization denied" });
+    return res.status(401).json({
+      msg: "Token không tồn tại"
+    });
   }
   // Verify token
   try {
     jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
       if (error) {
-        return res.status(401).json({ msg: "Token is not valid" });
+        return res.status(401).json({
+          msg: "Token không hợp lệ"
+        });
       } else {
         req.user = decoded;
         next();
@@ -24,6 +28,8 @@ module.exports = function (req, res, next) {
   } catch (err) {
     console.log(err);
     console.error("something wrong with auth middleware");
-    res.status(500).json({ msg: "Server Error" });
+    res.status(500).json({
+      msg: "Server Error"
+    });
   }
 };

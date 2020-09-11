@@ -41,9 +41,8 @@ const listRequestLoanUser = async (req, res) => {
     const request = await Loan.find({
       userId: req.user.id
     });
-
+    console.log(request)
     // [{bankId, packageId}]
-    const listBank
     if (request) {
       return res.status(200).json(request);
 

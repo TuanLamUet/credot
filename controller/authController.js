@@ -1,38 +1,66 @@
 /** @format */
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
+const {
+  validationResult
+} = require("express-validator");
 const User = require("../models/user");
 
-const register = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { telephoneNumber, password, rePassword, point, role } = req.body;
+const createNewUser = async (req, res) => {
+  const {
+    telephoneNumber,
+    point,
+    role
+  } = req.body;
 
   try {
-    let user = await User.findOne({ telephoneNumber });
+    let user = await User.findOne({
+      telephoneNumber
+    });
 
     if (user) {
-      return res.status(400).json({ errors: [{ msg: "User already exists" }] });
+      return res.status(400).json({
+        errors: {
+          msg: "User này đã tồn tại"
+        }
+      });
     }
 
     user = new User({
       telephoneNumber,
-      password,
-      rePassword,
       point,
       role,
     });
 
+    user.save()
+    return res.status(201).json({
+      message: 'Tạo tài khoản thành công'
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+const register = async (req, res) => {
+
+  const {
+    telephoneNumber,
+    password,
+    rePassword,
+  } = req.body;
+
+  try {
+    let user = await User.findOne({
+      telephoneNumber
+    });
     const salt = await bcrypt.genSalt(8);
 
-    user.password = await bcrypt.hash(password, salt);
+    if (user && !!(password === rePassword)) {
+      user.password = await bcrypt.hash(password, salt)
+    }
 
-    await user.save();
-
+    user.save()
     const userInfo = {
       id: user._id,
       telephoneNumber,
@@ -43,11 +71,15 @@ const register = async (req, res) => {
 
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5 days" },
+      process.env.JWT_SECRET, {
+        expiresIn: "5 days"
+      },
       (err, token) => {
         if (err) throw err;
-        res.json({ user: payload, token });
+        res.json({
+          user: payload,
+          token
+        });
       }
     );
   } catch (err) {
@@ -60,21 +92,34 @@ const login = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      errors: errors.array()
+    });
   }
 
-  const { telephoneNumber, password } = req.body;
+  const {
+    telephoneNumber,
+    password
+  } = req.body;
   try {
     const user = await User.findOne({
       telephoneNumber,
     });
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      return res.status(400).json({
+        errors: [{
+          msg: "Invalid Credentials"
+        }]
+      });
     }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      return res.status(400).json({
+        errors: [{
+          msg: "Invalid Credentials"
+        }]
+      });
     }
     const userInfo = {
       id: user._id,
@@ -86,8 +131,9 @@ const login = async (req, res) => {
 
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5 days" },
+      process.env.JWT_SECRET, {
+        expiresIn: "5 days"
+      },
       (err, token) => {
         if (err) throw err;
         res.json({
@@ -105,4 +151,5 @@ const login = async (req, res) => {
 module.exports = {
   register,
   login,
+  createNewUser
 };
