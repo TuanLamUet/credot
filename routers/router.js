@@ -10,7 +10,7 @@ const loanController = require("../controller/loanController");
 
 router.post("/login", authController.login);
 router.post("/user", authController.createNewUser)
-router.patch("/register", authController.register);
+router.put("/register", authController.register);
 
 router.post("/bank", auth, bankController.createNewBank);
 router.put("/bank", auth, bankController.addNewLoanPackageToBank);

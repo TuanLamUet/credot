@@ -5,7 +5,11 @@ const shortId = require("shortid");
 
 const getAllBank = async (_req, res) => {
   const listBank = await Bank.find();
-  return res.status(200).json(listBank);
+  return res.status(200).json({
+    status: true,
+    message: "success",
+    data: listBank
+  });
 };
 
 const getBankFilterByUser = (req, res) => {};
@@ -17,6 +21,7 @@ const createNewBank = async (req, res) => {
     amountFrom,
     amountTo,
     percentRate,
+    period
   } = req.body;
   try {
     let bank = await Bank.findOne({
@@ -37,12 +42,17 @@ const createNewBank = async (req, res) => {
         amountFrom,
         amountTo,
         percentRate,
+        period
       }],
     });
     await bank.save();
     return res.status(201).json(bank);
   } catch (err) {
-    res.json(500).json(err);
+    console.log(err)
+    res.json(500).json({
+      status: false,
+      message: "server error"
+    });
   }
 };
 
@@ -53,6 +63,7 @@ const addNewLoanPackageToBank = async (req, res) => {
     amountFrom,
     amountTo,
     percentRate,
+    period
   } = req.body;
   try {
     const bank = await Bank.findOne({
@@ -60,6 +71,7 @@ const addNewLoanPackageToBank = async (req, res) => {
     });
     if (!bank) {
       return res.status(400).json({
+        status: false,
         message: "Ngân hàng này không tồn tại"
       });
     }
@@ -68,13 +80,16 @@ const addNewLoanPackageToBank = async (req, res) => {
       amountFrom,
       amountTo,
       percentRate,
+      period
     };
     bank.listSuggest.unshift(listSuggest)
     console.log(bank);
     await bank.save()
     return res.status(200).json(bank);
   } catch (err) {
+    console.log(err)
     return res.status(500).json({
+      status: false,
       message: "Server error"
     });
   }

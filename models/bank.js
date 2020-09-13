@@ -31,6 +31,9 @@ const BankSchema = new Schema({
       type: String,
       required: true,
     },
+    period: {
+      type: String,
+    }
 
   }, ],
 }, {
