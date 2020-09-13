@@ -15,6 +15,7 @@ const port = process.env.PORT || 3300;
 connectDb();
 // for parsing application/json
 app.use(bodyParser.json()); 
+app.use('/images' ,express.static('assets'))
 
 // for parsing application/xwww-
 app.use(bodyParser.urlencoded({ extended: true })); 
