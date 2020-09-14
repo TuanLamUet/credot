@@ -139,7 +139,10 @@ const login = async (req, res) => {
       phone,
       role: user.role,
       point: user.point,
-      title: user.title
+      title: user.title,
+      address: user.address,
+      dob: user.dob,
+      name: user.name,
     };
     const payload = userInfo;
 
