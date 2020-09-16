@@ -76,7 +76,31 @@ const listRequestLoan = async (req, res) => {
   }
 };
 
+const getRequestLoanByBank = async (_req, res) => {
+  try {
+    const bankId = '5f623256e18012ecfb9921e9'
+    const loanPackages = await Loan.find({
+      bankId: bankId
+    });
+    if (loanPackages) {
+
+      return res.status(200).json({
+        status: true,
+        message: "success",
+        data: loanPackages
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      status: false,
+      message: "server error"
+    })
+  }
+}
+
 module.exports = {
   listRequestLoan,
   createNewRequestLoan,
+  getRequestLoanByBank
 };
