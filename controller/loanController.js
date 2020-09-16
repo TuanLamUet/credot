@@ -29,6 +29,7 @@ const createNewRequestLoan = async (req, res) => {
 
       const newRequestLoan = new Loan({
         userId: req.user.id,
+        bankId,
         reason,
         money
       })
@@ -78,7 +79,7 @@ const listRequestLoan = async (req, res) => {
 
 const getRequestLoanByBank = async (_req, res) => {
   try {
-    const bankId = '5f623256e18012ecfb9921e9'
+    const bankId = '5f62391bfc61314babbcc521'
     const loanPackages = await Loan.find({
       bankId: bankId
     });

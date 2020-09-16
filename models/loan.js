@@ -9,6 +9,10 @@ const LoanSchema = new Schema({
     type: String,
     required: true,
   },
+  bankId: {
+    type: String,
+    required: true
+  },
   bankName: {
     type: String,
     required: true
