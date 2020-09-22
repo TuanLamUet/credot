@@ -27,7 +27,7 @@ const LoanSchema = new Schema({
   },
   status: {
     type: String,
-    default: 'chờ duyệt'
+    default: 'Chờ duyệt'
   },
   listLoan: [{
     nameLoanPackage: {

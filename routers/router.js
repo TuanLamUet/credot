@@ -19,5 +19,6 @@ router.get("/bank", auth, bankController.getAllBank);
 router.get("/loan", auth, loanController.listRequestLoan)
 router.post("/loan", auth, loanController.createNewRequestLoan)
 router.get("/loan-bank", loanController.getRequestLoanByBank)
+router.patch("/loan-bank", loanController.updateStatusRequestByBank)
 router.get("/user", auth, userController.userInfo);
 module.exports = router;

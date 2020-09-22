@@ -26,7 +26,7 @@ const createNewUser = async (req, res) => {
 
     user = new User({
       phone,
-      point,
+      point: ficoConversion(point),
       role,
     });
 
@@ -183,6 +183,27 @@ const handleTitle = (point) => {
     return 'Xuất sắc'
   }
 }
+
+const ficoConversion = (x)  => {
+  if (x <= 1 && x >= 0.401) {
+    let fico = (((x - 0.401) * 329) / 0.599) + 300
+    fico - (329 - (629 - fico) * 2)
+    return Math.ceil(fico)
+  } else if (x <= 0.4 && x >= 0.292) {
+    let fico = (((x - 0.292) * 59) / 0.108) + 630
+    fico = fico - (59 - (689 - fico) * 2)
+    return Math.ceil(fico)
+  } else if (x <= 0.291 && x >= 0.238) {
+    let fico = (((x - 0.238) * 29) / 0.053) + 690
+    fico - (29 - (719 - fico) * 2)
+    return Math.ceil(fico)
+  } else if (x <= 0.237 && x >= 0) {
+    let fico = (((x - 0) * 130) / 0.237) + 720
+    fico - (130 - (850 - fico) * 2)
+    return Math.ceil(fico)
+  }
+}
+
 module.exports = {
   register,
   login,

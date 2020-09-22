@@ -4,14 +4,16 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-var multer = require('multer');
-var upload = multer();
+const cors = require('cors')
+let multer = require('multer');
+let upload = multer();
 
 const connectDb = require("./config/connectDb");
 const router = require("./routers/router");
 
 const port = process.env.PORT || 3300;
 
+app.use(cors( ))
 connectDb();
 // for parsing application/json
 app.use(bodyParser.json()); 
